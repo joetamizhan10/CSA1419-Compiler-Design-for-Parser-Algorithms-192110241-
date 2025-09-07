@@ -1,0 +1,24 @@
+#include <stdio.h>
+int main() {
+    FILE *fp;
+    char c;
+    int spaces = 0, tabs = 0, newlines = 0;
+    fp = fopen("input.txt", "r");  
+    if (fp == NULL) {
+        printf("Cannot open file!\n");
+        return 0;
+    }
+    while ((c = fgetc(fp)) != EOF) {
+        if (c == ' ')
+            spaces++;
+        else if (c == '\t')
+            tabs++;
+        else if (c == '\n')
+            newlines++;
+    }
+    fclose(fp);
+    printf("Number of spaces: %d\n", spaces);
+    printf("Number of tabs: %d\n", tabs);
+    printf("Number of newlines: %d\n", newlines);
+    return 0;
+}
