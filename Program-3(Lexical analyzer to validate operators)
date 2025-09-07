@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <string.h>
+// Function to check if a given string is a valid operator
+int isOperator(char *op) {
+    if (strcmp(op, "+") == 0) return 1;
+    if (strcmp(op, "-") == 0) return 1;
+    if (strcmp(op, "*") == 0) return 1;
+    if (strcmp(op, "/") == 0) return 1;
+    return 0;
+}
+int main() {
+    char input[10];
+    printf("Enter an operator: ");
+    scanf("%s", input);
+
+    if (isOperator(input)) {
+        printf("Valid Arithmetic Operator: %s\n", input);
+    } else {
+        printf("Not a valid Arithmetic Operator\n");
+    }
+    return 0;
+}
