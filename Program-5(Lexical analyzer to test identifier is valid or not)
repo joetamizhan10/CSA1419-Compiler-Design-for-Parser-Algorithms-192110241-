@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+// List of some reserved keywords in C
+const char *keywords[] = {
+    "int", "float", "char", "double", "if", "else", "while",
+    "for", "do", "return", "switch", "case", "break", "continue",
+    "struct", "typedef", "void", "static", "long", "short",
+    "signed", "unsigned", "const", "volatile", "enum", "default"
+};
+int keywordCount = sizeof(keywords) / sizeof(keywords[0]);
+// Function to check if a string is a keyword
+int isKeyword(const char *str) {
+    for (int i = 0; i < keywordCount; i++) {
+        if (strcmp(str, keywords[i]) == 0)
+            return 1;
+    }
+    return 0;
+}
+// Function to check if identifier is valid
+int isValidIdentifier(const char *str) {
+    int i;
+    // First character must be alphabet or underscore
+    if (!(isalpha(str[0]) || str[0] == '_'))
+        return 0;
+    // Remaining characters must be alphanumeric or underscore
+    for (i = 1; str[i] != '\0'; i++) {
+        if (!(isalnum(str[i]) || str[i] == '_'))
+            return 0;
+    }
+    // Check if identifier is a keyword
+    if (isKeyword(str))
+        return 0;
+
+    return 1;
+}
+int main() {
+    char identifier[50];
+    printf("Enter an identifier: ");
+    scanf("%s", identifier);
+
+    if (isValidIdentifier(identifier))
+        printf("Valid Identifier\n");
+    else
+        printf("Invalid Identifier\n");
+        return 0;
+}
