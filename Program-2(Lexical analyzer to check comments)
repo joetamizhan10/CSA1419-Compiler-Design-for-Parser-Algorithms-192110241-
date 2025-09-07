@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+// Function to check if a line is a comment
+void checkComment(char *line) {
+    int len = strlen(line);
+    // Single-line comment
+    if (len >= 2 && line[0] == '/' && line[1] == '/') {
+        printf("This is a Single-line Comment\n");
+        return;
+    }
+    // Multi-line comment
+    if (len >= 2 && line[0] == '/' && line[1] == '*') {
+        if (len >= 4 && line[len - 2] == '*' && line[len - 1] == '/') {
+            printf("This is a Multi-line Comment\n");
+        } else {
+            printf("This is the START of a Multi-line Comment (not closed)\n");
+        }
+        return;
+    }
+
+    printf("This is NOT a Comment\n");
+}
+int main() {
+    char line[200];
+    printf("Enter a line of code: ");
+    fgets(line, sizeof(line), stdin);
+    // Remove newline character if present
+    line[strcspn(line, "\n")] = '\0';
+    checkComment(line);
+    return 0;
+}
