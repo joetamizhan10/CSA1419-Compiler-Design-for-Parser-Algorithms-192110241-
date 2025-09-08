@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+// Function to check if string is a valid identifier
+int isValidIdentifier(char str[]) {
+    int i;
+
+    // Rule 1: First character must be a letter or underscore
+    if (!(isalpha(str[0]) || str[0] == '_'))
+        return 0;
+
+    // Rule 2: Remaining can be letters, digits, or underscore
+    for (i = 1; str[i] != '\0'; i++) {
+        if (!(isalnum(str[i]) || str[i] == '_'))
+            return 0;
+    }
+
+    return 1;
+}
+
+int main() {
+    char input[50];
+
+    printf("Enter a string: ");
+    scanf("%s", input);
+
+    if (isValidIdentifier(input))
+        printf("? The string '%s' is VALID as per grammar.\n", input);
+    else
+        printf("? The string '%s' is INVALID as per grammar.\n", input);
+        return 0;
+}
