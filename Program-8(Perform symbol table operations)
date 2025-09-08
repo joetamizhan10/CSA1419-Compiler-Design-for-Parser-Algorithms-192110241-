@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure for a symbol table entry
+struct Symbol {
+    char name[20];
+    char type[10];
+    int address;
+    struct Symbol *next;
+};
+
+struct Symbol *head = NULL;
+
+// Insert a symbol
+void insert(char name[], char type[], int address) {
+    struct Symbol *temp = head;
+
+    // Check for duplicate
+    while (temp != NULL) {
+        if (strcmp(temp->name, name) == 0) {
+            printf("Error: Identifier '%s' already exists!\n", name);
+            return;
+        }
+        temp = temp->next;
+    }
+
+    struct Symbol *newNode = (struct Symbol *)malloc(sizeof(struct Symbol));
+    strcpy(newNode->name, name);
+    strcpy(newNode->type, type);
+    newNode->address = address;
+    newNode->next = head;
+    head = newNode;
+
+    printf("Inserted successfully!\n");
+}
+
+// Display symbol table
+void display() {
+    if (head == NULL) {
+        printf("Symbol Table is empty!\n");
+        return;
+    }
+
+    printf("\n%-15s %-10s %-10s\n", "Identifier", "Type", "Address");
+    printf("-----------------------------------\n");
+
+    struct Symbol *temp = head;
+    while (temp != NULL) {
+        printf("%-15s %-10s %-10d\n", temp->name, temp->type, temp->address);
+        temp = temp->next;
+    }
+}
+
+// Search a symbol
+void search(char name[]) {
+    struct Symbol *temp = head;
+    while (temp != NULL) {
+        if (strcmp(temp->name, name) == 0) {
+            printf("Found! %s - Type: %s, Address: %d\n",
+                   temp->name, temp->type, temp->address);
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("Identifier '%s' not found!\n", name);
+}
+
+// Delete a symbol
+void delete(char name[]) {
+    struct Symbol *temp = head, *prev = NULL;
+
+    while (temp != NULL && strcmp(temp->name, name) != 0) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Identifier '%s' not found!\n", name);
+        return;
+    }
+
+    if (prev == NULL) {
+        head = temp->next;  // deleting head
+    } else {
+        prev->next = temp->next;
+    }
+
+    free(temp);
+    printf("Deleted successfully!\n");
+}
+
+int main() {
+    int choice, address;
+    char name[20], type[10];
+
+    while (1) {
+        printf("\n--- SYMBOL TABLE OPERATIONS (Linked List) ---\n");
+        printf("1. Insert\n2. Display\n3. Search\n4. Delete\n5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter identifier name: ");
+                scanf("%19s", name);
+                printf("Enter type: ");
+                scanf("%9s", type);
+                printf("Enter address: ");
+                scanf("%d", &address);
+                insert(name, type, address);
+                break;
+            case 2:
+                display();
+                break;
+            case 3:
+                printf("Enter identifier to search: ");
+                scanf("%19s", name);
+                search(name);
+                break;
+            case 4:
+                printf("Enter identifier to delete: ");
+                scanf("%19s", name);
+                delete(name);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+}
