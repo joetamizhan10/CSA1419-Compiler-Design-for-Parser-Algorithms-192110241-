@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX 10
+
+int main() {
+    char nonTerminal, alpha[MAX][MAX], beta[MAX][MAX];
+    int n, i, j, ac = 0, bc = 0;
+    
+    printf("Enter the number of productions: ");
+    scanf("%d", &n);
+    
+    for (i = 0; i < n; i++) {
+        printf("\nEnter Left side (Non-terminal): ");
+        scanf(" %c", &nonTerminal);
+        
+        printf("Enter Right side of production (use '|' for multiple): ");
+        char rhs[100];
+        scanf("%s", rhs);
+        
+        // Split RHS by '|'
+        char *token = strtok(rhs, "|");
+        while (token != NULL) {
+            if (token[0] == nonTerminal) {
+                // Left recursive part (A ? Aa)
+                strcpy(alpha[ac++], token + 1);
+            } else {
+                // Non-left recursive part (A ? ß)
+                strcpy(beta[bc++], token);
+            }
+            token = strtok(NULL, "|");
+        }
+        
+        // Eliminate left recursion
+        if (ac != 0) {
+            printf("\nGrammar without Left Recursion:\n");
+            printf("%c -> ", nonTerminal);
+            for (j = 0; j < bc; j++) {
+                printf("%s%c' ", beta[j], nonTerminal);
+                if (j != bc - 1) printf("| ");
+            }
+            printf("\n");
+            
+            printf("%c' -> ", nonTerminal);
+            for (j = 0; j < ac; j++) {
+                printf("%s%c' ", alpha[j], nonTerminal);
+                if (j != ac - 1) printf("| ");
+            }
+            printf("| e\n");
+        } else {
+            // No left recursion
+            printf("\nNo Left Recursion. Production is:\n");
+            printf("%c -> %s\n", nonTerminal, rhs);
+        }
+    }
+    return 0;
+}
