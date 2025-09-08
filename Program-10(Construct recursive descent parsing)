@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char input[100];
+int pos = 0;
+
+// Function prototypes
+void E();
+void Eprime();
+void T();
+void Tprime();
+void F();
+
+void error() {
+    printf("? Error: Invalid string at position %d\n", pos + 1);
+    exit(0);
+}
+
+// Check current character and advance
+void match(char expected) {
+    if (input[pos] == expected) {
+        pos++;
+    } else {
+        error();
+    }
+}
+
+// Grammar rules implementation
+
+// E ? T E'
+void E() {
+    T();
+    Eprime();
+}
+
+// E' ? + T E' | e
+void Eprime() {
+    if (input[pos] == '+') {
+        match('+');
+        T();
+        Eprime();
+    }
+    // else epsilon ? do nothing
+}
+
+// T ? F T'
+void T() {
+    F();
+    Tprime();
+}
+
+// T' ? * F T' | e
+void Tprime() {
+    if (input[pos] == '*') {
+        match('*');
+        F();
+        Tprime();
+    }
+    // else epsilon ? do nothing
+}
+
+// F ? (E) | id
+void F() {
+    if (input[pos] == '(') {
+        match('(');
+        E();
+        match(')');
+    } else if (input[pos] >= 'a' && input[pos] <= 'z') {
+        match(input[pos]);  // accept identifier
+    } else {
+        error();
+    }
+}
+
+int main() {
+    printf("Enter an expression: ");
+    scanf("%s", input);
+
+    E();  // Start symbol
+
+    if (input[pos] == '\0')
+        printf("? The string is valid according to the grammar.\n");
+    else
+        printf("? Error: Extra symbols at the end of input.\n");
+        return 0;
+}
