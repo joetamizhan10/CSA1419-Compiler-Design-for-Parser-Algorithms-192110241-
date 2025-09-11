@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+abc     { printf("ABC"); }   /* Replace abc with ABC */
+.       { ECHO; }            /* Print other characters as-is */
+\n      { ECHO; }            /* Keep newlines */
+%%
+
+int main() {
+    printf("Enter a string: ");
+    yylex();
+    return 0;
+}
