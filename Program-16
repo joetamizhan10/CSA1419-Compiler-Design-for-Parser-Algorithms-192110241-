@@ -1,0 +1,40 @@
+%{
+#include <stdio.h>
+int charCount = 0, wordCount = 0, lineCount = 0;
+%}
+
+%%
+
+"//".*                     ;
+"/"([^]|\+[^/])\+"/" ;
+
+[ \t]+                     ;
+\n        { lineCount++; }
+[a-zA-Z_][a-zA-Z0-9_]*   { wordCount++; charCount += yyleng; }
+[0-9]+                   { wordCount++; charCount += yyleng; }
+\"([^\"\\]|\\.)*\"       { wordCount++; charCount += yyleng; }
+.                        { charCount++; }
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc > 1)
+        yyin = fopen(argv[1], "r");
+    else {
+        printf("Usage: ./a.out <filename.c>\n");
+        return 1;
+    }
+
+    yylex();
+
+    printf("\n--- Lexical Analyzer Result ---\n");
+    printf("Characters: %d\n", charCount);
+    printf("Words:      %d\n", wordCount);
+    printf("Lines:      %d\n", lineCount);
+
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
