@@ -1,0 +1,22 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+^[aeiouAEIOU][a-zA-Z0-9]*   { printf("Valid: String starts with a vowel → %s\n", yytext); }
+[a-zA-Z0-9]+                { printf("Invalid: String does not start with a vowel → %s\n", yytext); }
+[ \t\n]+                    ;   /* Ignore whitespace */
+.                           ;   /* Ignore other characters */
+
+%%
+
+int main() {
+    printf("Enter strings (Ctrl+D to stop):\n\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
