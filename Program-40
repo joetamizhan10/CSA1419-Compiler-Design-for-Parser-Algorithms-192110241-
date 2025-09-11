@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+%}
+
+/* Definitions */
+WORD     [a-zA-Z]+
+RELOP    (<=|>=|==|!=|<|>)
+
+%%
+
+{WORD}      { printf("Word: %s\n", yytext); }
+{RELOP}     { printf("Relational Operator: %s\n", yytext); }
+
+[ \t\n]+    ;   /* Ignore whitespace */
+.           { printf("Other: %s\n", yytext); }
+
+%%
+
+int main() {
+    printf("Enter input (Ctrl+D to stop):\n\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
