@@ -1,0 +1,23 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+/^[6-9][0-9]{9}$/    { printf("Valid Mobile Number: %s\n", yytext); }
+[0-9]+               { printf("Invalid Mobile Number: %s (Must be 10 digits starting with 6-9)\n", yytext); }
+.|\n                 { /* ignore other characters */ }
+
+%%
+
+int main()
+{
+    printf("Enter mobile numbers (one per line). Press Ctrl+D to stop.\n");
+    yylex();
+    return 0;
+}
+
+int yywrap()
+{
+    return 1;
+}
