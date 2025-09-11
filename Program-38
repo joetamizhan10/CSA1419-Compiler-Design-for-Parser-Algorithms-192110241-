@@ -1,0 +1,32 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+int count = 0;
+char target[50] = "the";   // word to search (can be changed)
+%}
+
+%%
+
+[a-zA-Z]+    {
+                 if (strcasecmp(yytext, target) == 0) { 
+                     count++;
+                 }
+             }
+
+[ \t\n]+     ;   /* Ignore whitespace */
+.            ;   /* Ignore other characters */
+
+%%
+
+int main() {
+    printf("Enter a sentence (Ctrl+D to stop):\n\n");
+    yylex();
+    printf("\nWord searched: %s\n", target);
+    printf("Frequency: %d\n", count);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
