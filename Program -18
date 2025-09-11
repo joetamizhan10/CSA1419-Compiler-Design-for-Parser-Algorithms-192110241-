@@ -1,0 +1,34 @@
+%{
+#include <stdio.h>
+int macroCount = 0, headerCount = 0;
+%}
+
+%%
+
+"#define".*      { macroCount++; }
+"#include".*     { headerCount++; }
+
+.|\n             ;
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc > 1)
+        yyin = fopen(argv[1], "r");
+    else {
+        printf("Usage: ./a.out <filename.c>\n");
+        return 1;
+    }
+
+    yylex();
+
+    printf("\n--- Lexical Analyzer Result ---\n");
+    printf("Number of Macros defined: %d\n", macroCount);
+    printf("Number of Header files included: %d\n", headerCount);
+
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
