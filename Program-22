@@ -1,0 +1,37 @@
+%{
+#include <stdio.h>
+int commentCount = 0;
+FILE *out;
+%}
+
+%%
+
+"//".*              { commentCount++; }       
+"/"([^]|\+[^/])\+"/"   { commentCount++; }  
+
+.|\n                { fprintf(out, "%s", yytext); }
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc > 2) {
+        yyin = fopen(argv[1], "r");
+        out = fopen(argv[2], "w");
+    } else {
+        printf("Usage: ./a.out input.c output.c\n");
+        return 1;
+    }
+
+    yylex();
+
+    fclose(out);
+
+    printf("\n--- Lexical Analyzer Result ---\n");
+    printf("Number of comment lines removed: %d\n", commentCount);
+
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
