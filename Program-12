@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int tempCount = 1;
+
+// Function to generate temporary variable names
+void newTemp(char *temp) {
+    sprintf(temp, "t%d", tempCount++);
+}
+
+// Function to generate Three Address Code (TAC) for simple expressions
+void generateTAC(char expr[]) {
+    char op, temp[5], t1[5], t2[5];
+    int i, len = strlen(expr);
+
+    printf("\nThree Address Code:\n");
+
+    for (i = 0; i < len; i++) {
+        if (expr[i] == '*' || expr[i] == '/' || expr[i] == '+' || expr[i] == '-') {
+            op = expr[i];
+
+            // Left operand
+            if (isalpha(expr[i - 1]))
+                sprintf(t1, "%c", expr[i - 1]);
+            else
+                sprintf(t1, "t%d", tempCount - 1);
+
+            // Right operand
+            if (isalpha(expr[i + 1]))
+                sprintf(t2, "%c", expr[i + 1]);
+            else
+                sprintf(t2, "t%d", tempCount - 1);
+
+            newTemp(temp);
+            printf("%s = %s %c %s\n", temp, t1, op, t2);
+
+            // Replace computed part in expression with temp (for chaining)
+            expr[i - 1] = temp[0];  // keep only first char 't'
+        }
+    }
+}
+
+int main() {
+    char expr[50];
+
+    printf("Enter an expression (e.g., a+b*c): ");
+    scanf("%s", expr);
+
+    generateTAC(expr);
+    return 0;
+}
+
