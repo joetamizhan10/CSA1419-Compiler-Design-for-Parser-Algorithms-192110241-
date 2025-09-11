@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+%}
+
+/* Rules Section */
+%%
+[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}   { printf("Valid Email Address: %s\n", yytext); }
+.+                                                { printf("Invalid Email Address: %s\n", yytext); }
+%%
+
+int main() {
+    printf("Enter an email address: ");
+    yylex();
+    return 0;
+}
