@@ -1,0 +1,34 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+int max_len = 0;         // to store the maximum word length
+char longest[100];       // to store the longest word
+%}
+
+%%
+
+[a-zA-Z]+    {
+                 int len = strlen(yytext);
+                 if (len > max_len) {
+                     max_len = len;
+                     strcpy(longest, yytext);
+                 }
+             }
+
+[ \t\n]+     ;   /* Ignore whitespace */
+.            ;   /* Ignore other characters */
+
+%%
+
+int main() {
+    printf("Enter a sentence (Ctrl+D to stop):\n\n");
+    yylex();
+    printf("\nLongest word: %s\n", longest);
+    printf("Length of longest word: %d\n", max_len);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
