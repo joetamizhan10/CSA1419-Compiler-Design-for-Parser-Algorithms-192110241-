@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+
+const char *expr;  // input expression
+int pos = 0;
+
+// Function prototypes
+double parseExpression();
+double parseTerm();
+double parseFactor();
+double parsePower();
+double parseNumber();
+
+// Skip spaces
+void skipSpaces() {
+    while (isspace(expr[pos])) pos++;
+}
+
+// Parse numbers (multi-digit allowed)
+double parseNumber() {
+    skipSpaces();
+    double result = 0;
+    while (isdigit(expr[pos])) {
+        result = result * 10 + (expr[pos] - '0');
+        pos++;
+    }
+    if (expr[pos] == '.') {
+        pos++;
+        double frac = 0.1;
+        while (isdigit(expr[pos])) {
+            result += (expr[pos] - '0') * frac;
+            frac *= 0.1;
+            pos++;
+        }
+    }
+    return result;
+}
+
+// Parse factors: (expr) or number
+double parseFactor() {
+    skipSpaces();
+    if (expr[pos] == '(') {
+        pos++;
+        double result = parseExpression();
+        if (expr[pos] == ')') pos++;
+        return result;
+    } else {
+        return parseNumber();
+    }
+}
+
+// Parse power/exponentiation (^ has higher precedence than * /)
+double parsePower() {
+    double base = parseFactor();
+    skipSpaces();
+    while (expr[pos] == '^') {
+        pos++;
+        double exp = parseFactor();
+        printf("Evaluating: %.2f ^ %.2f\n", base, exp);
+        base = pow(base, exp);
+    }
+    return base;
+}
+
+// Parse terms (* and /)
+double parseTerm() {
+    double value = parsePower();
+    skipSpaces();
+    while (expr[pos] == '*' || expr[pos] == '/') {
+        char op = expr[pos++];
+        double right = parsePower();
+        if (op == '*') {
+            printf("Evaluating: %.2f * %.2f\n", value, right);
+            value *= right;
+        } else {
+            printf("Evaluating: %.2f / %.2f\n", value, right);
+            value /= right;
+        }
+        skipSpaces();
+    }
+    return value;
+}
+
+// Parse expression (+ and -)
+double parseExpression() {
+    double value = parseTerm();
+    skipSpaces();
+    while (expr[pos] == '+' || expr[pos] == '-') {
+        char op = expr[pos++];
+        double right = parseTerm();
+        if (op == '+') {
+            printf("Evaluating: %.2f + %.2f\n", value, right);
+            value += right;
+        } else {
+            printf("Evaluating: %.2f - %.2f\n", value, right);
+            value -= right;
+        }
+        skipSpaces();
+    }
+    return value;
+}
+
+int main() {
+    char input[100];
+    printf("Enter an expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    expr = input;
+    pos = 0;
+
+    double result = parseExpression();
+    printf("\nFinal Result = %.2f\n", result);
+
+    return 0;
+}
