@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Statement {
+    char lhs[10];
+    char op1[10];
+    char op[5];
+    char op2[10];
+};
+
+int main() {
+    int n, i, j, k;
+    struct Statement st[20];
+    
+    printf("Enter number of statements: ");
+    scanf("%d", &n);
+
+    printf("Enter statements in format: result operand1 operator operand2\n");
+    printf("Example: t1 a + b\n\n");
+
+    for (i = 0; i < n; i++) {
+        scanf("%s %s %s %s", st[i].lhs, st[i].op1, st[i].op, st[i].op2);
+    }
+
+    printf("\n--- Optimized Code (CSE Applied) ---\n");
+    for (i = 0; i < n; i++) {
+        int common = 0;
+        for (j = 0; j < i; j++) {
+            // Check if expression already computed
+            if (strcmp(st[i].op, st[j].op) == 0 &&
+                strcmp(st[i].op1, st[j].op1) == 0 &&
+                strcmp(st[i].op2, st[j].op2) == 0) {
+                
+                printf("%s = %s\n", st[i].lhs, st[j].lhs); // Reuse
+                common = 1;
+                break;
+            }
+        }
+        if (!common) {
+            printf("%s = %s %s %s\n", st[i].lhs, st[i].op1, st[i].op, st[i].op2);
+        }
+    }
+    return 0;
+}
